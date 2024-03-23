@@ -6,8 +6,15 @@
 #define FILENAME "accounts.txt"
 
 typedef struct {
+    int day;
+    int month;
+    int year;
+} Date;
+
+typedef struct {
     int account_number;
     char name[50];
+    Date dob; // Date of birth
     float balance;
 } Account;
 
@@ -96,6 +103,9 @@ void create_account() {
     fgets(new_account.name, sizeof(new_account.name), stdin);
     new_account.name[strcspn(new_account.name, "\n")] = '\0'; // Remove trailing newline
 
+    printf("Enter date of birth (DD MM YYYY): ");
+    scanf("%d %d %d", &new_account.dob.day, &new_account.dob.month, &new_account.dob.year);
+
     printf("Enter initial balance: ");
     scanf("%f", &new_account.balance);
 
@@ -116,6 +126,9 @@ void update_account() {
             fgets(accounts[i].name, sizeof(accounts[i].name), stdin);
             accounts[i].name[strcspn(accounts[i].name, "\n")] = '\0'; // Remove trailing newline
 
+            printf("Enter new date of birth (DD MM YYYY): ");
+            scanf("%d %d %d", &accounts[i].dob.day, &accounts[i].dob.month, &accounts[i].dob.year);
+
             printf("Enter new balance: ");
             scanf("%f", &accounts[i].balance);
             found = 1;
@@ -128,6 +141,7 @@ void update_account() {
         printf("Account not found.\n");
     }
 }
+
 
 
 void transactions() {
@@ -145,6 +159,7 @@ void check_account() {
         if (accounts[i].account_number == account_num) {
             printf("Account number: %d\n", accounts[i].account_number);
             printf("Name: %s\n", accounts[i].name);
+            printf("Date of Birth: %d-%d-%d\n", accounts[i].dob.day, accounts[i].dob.month, accounts[i].dob.year);
             printf("Balance: %.2f\n", accounts[i].balance);
             found = 1;
             break;
@@ -153,6 +168,15 @@ void check_account() {
 
     if (!found) {
         printf("Account not found.\n");
+    }
+}
+
+void view_customer_list() {
+    printf("Customer List:\n");
+    for (int i = 0; i < num_accounts; ++i) {
+        printf("Account number: %d, Name: %s, Date of Birth: %d-%d-%d, Balance: %.2f\n",
+               accounts[i].account_number, accounts[i].name, accounts[i].dob.day, accounts[i].dob.month,
+               accounts[i].dob.year, accounts[i].balance);
     }
 }
 
@@ -176,13 +200,6 @@ void delete_account() {
 
     if (!found) {
         printf("Account not found.\n");
-    }
-}
-
-void view_customer_list() {
-    printf("Customer List:\n");
-    for (int i = 0; i < num_accounts; ++i) {
-        printf("Account number: %d, Name: %s, Balance: %.2f\n", accounts[i].account_number, accounts[i].name, accounts[i].balance);
     }
 }
 
