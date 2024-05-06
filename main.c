@@ -142,11 +142,52 @@ void update_account() {
     }
 }
 
-
-
 void transactions() {
-    // Implement transaction functionality here
-    printf("This feature is not implemented yet.\n");
+    int account_num;
+    printf("Enter account number: ");
+    scanf("%d", &account_num);
+
+    int found = 0;
+    for (int i = 0; i < num_accounts; ++i) {
+        if (accounts[i].account_number == account_num) {
+            int choice;
+            printf("1. Deposit\n");
+            printf("2. Withdraw\n");
+            printf("Enter your choice: ");
+            scanf("%d", &choice);
+
+            switch (choice) {
+                case 1:
+                    // Deposit
+                    float amount;
+                    printf("Enter amount to deposit: ");
+                    scanf("%f", &amount);
+                    accounts[i].balance += amount;
+                    printf("Deposit successful. New balance: %.2f\n", accounts[i].balance);
+                    break;
+                case 2:
+                    // Withdraw
+                    printf("Enter amount to withdraw: ");
+                    scanf("%f", &amount);
+                    if (amount > accounts[i].balance) {
+                        printf("Insufficient funds.\n");
+                    } else {
+                        accounts[i].balance -= amount;
+                        printf("Withdrawal successful. New balance: %.2f\n", accounts[i].balance);
+                    }
+                    break;
+                default:
+                    printf("Invalid choice.\n");
+            }
+
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Account not found.\n");
+    }
 }
 
 void check_account() {
@@ -204,14 +245,110 @@ void delete_account() {
 }
 
 void bank_loan() {
-    // Implement bank loan functionality here
-    printf("This feature is not implemented yet.\n");
+    int account_num;
+    printf("Enter account number: ");
+    scanf("%d", &account_num);
+
+    int found = 0;
+    for (int i = 0; i < num_accounts; ++i) {
+        if (accounts[i].account_number == account_num) {
+            float balance = accounts[i].balance;
+            int age = 2024 - accounts[i].dob.year; // Assuming the current year is 2024
+            int months_since_creation = 0; // You need to calculate this based on the account creation date
+
+            // Check eligibility criteria
+            if (balance >= 5000 && age >= 18 && months_since_creation >= 6) {
+                float loan_amount;
+                printf("Enter loan amount: ");
+                scanf("%f", &loan_amount);
+
+                // Add loan amount to the current balance
+                accounts[i].balance += loan_amount;
+
+                printf("Loan approved. Amount: %.2f\n", loan_amount);
+                printf("Loan amount has been added to your account balance.\n");
+                printf("New balance: %.2f\n", accounts[i].balance);
+            } else {
+                printf("You are not eligible for a loan at this time.\n");
+            }
+
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Account not found.\n");
+    }
 }
 
+
 void foreign_currency_exchange() {
-    // Implement foreign currency exchange functionality here
-    printf("This feature is not implemented yet.\n");
+    // Define exchange rates for different currencies (assuming 1 BDT = X units of foreign currency)
+    float usd_rate = 0.0118; // Example exchange rate for USD
+    float eur_rate = 0.0101; // Example exchange rate for EUR
+    float gbp_rate = 0.0085; // Example exchange rate for GBP
+
+    int account_num;
+    printf("Enter account number: ");
+    scanf("%d", &account_num);
+
+    int found = 0;
+    for (int i = 0; i < num_accounts; ++i) {
+        if (accounts[i].account_number == account_num) {
+            float balance = accounts[i].balance;
+
+            printf("Select currency to exchange:\n");
+            printf("1. USD\n");
+            printf("2. EUR\n");
+            printf("3. GBP\n");
+            int choice;
+            printf("Enter your choice: ");
+            scanf("%d", &choice);
+
+            float exchange_rate;
+            float amount_to_exchange;
+            switch (choice) {
+                case 1:
+                    exchange_rate = usd_rate;
+                    break;
+                case 2:
+                    exchange_rate = eur_rate;
+                    break;
+                case 3:
+                    exchange_rate = gbp_rate;
+                    break;
+                default:
+                    printf("Invalid choice.\n");
+                    return;
+            }
+
+            printf("Enter amount to exchange (in BDT): ");
+            scanf("%f", &amount_to_exchange);
+
+            // Calculate the amount of foreign currency
+            float exchanged_amount = amount_to_exchange * exchange_rate;
+
+            if (amount_to_exchange > balance) {
+                printf("Insufficient balance.\n");
+            } else {
+                // Deduct the exchanged amount from the balance
+                accounts[i].balance -= amount_to_exchange;
+
+                printf("Exchanged %.2f BDT to %.2f foreign currency.\n", amount_to_exchange, exchanged_amount);
+                printf("New balance: %.2f BDT\n", accounts[i].balance);
+            }
+
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Account not found.\n");
+    }
 }
+
 
 void save_data() {
     FILE *fp = fopen(FILENAME, "w");
